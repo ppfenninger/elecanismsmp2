@@ -1,0 +1,22 @@
+M = csvread('document.csv');
+time = M(3907:end, 2);
+angle = M(3907:end, 1);
+% plot(M(:, 2))
+maxValue = max(angle);
+angle = 2*pi*angle./maxValue;
+angle = unwrap(angle);
+
+startTime = time(1);
+time = time - startTime; 
+time = 256.*time./16000000;
+% speed = diff(angle)./diff(time); 
+% filter = butter(2, .05);
+xq = linspace(0, max(time), 500); 
+betterAngle = spline(time, angle, xq);
+speed = diff(betterAngle)./diff(xq); 
+disp(size(speed))
+speed = medfilt1(speed);
+xq = xq(2:end); 
+plot(xq, speed);
+
+angle = [0, 45/2, 45, 45 + 45/2, 90, 90 + 45/2, 135, 135 /2, 180, 225/2, 225, 270/2, 270, 315/2, 315, 
